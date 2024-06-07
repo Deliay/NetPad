@@ -26,14 +26,21 @@ public class ScriptEnvironmentTests : TestBase
         base.ConfigureServices(services);
     }
 
+    private class InitialRunningScriptEnvironment : ScriptEnvironment
+    {
+        public InitialRunningScriptEnvironment(Script script, IServiceScope serviceScope) : base(script, serviceScope)
+        {
+            Status = ScriptStatus.Running;
+        }
+    }
+
     [Fact]
-    public void RunningScriptWhileItsAlreadyRunning_ThrowsInvalidOperationException()
+    public async Task RunningScriptWhileItsAlreadyRunning_ThrowsInvalidOperationException()
     {
         var script = ScriptTestHelper.CreateScript();
-        var environment = new Mock<ScriptEnvironment>(script, ServiceProvider.CreateScope());
-        environment.Setup(e => e.Status).Returns(ScriptStatus.Running);
+        var environment = new InitialRunningScriptEnvironment(script, ServiceProvider.CreateScope());
 
-        Assert.ThrowsAsync<InvalidOperationException>(() => environment.Object.RunAsync(new RunOptions()));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => environment.RunAsync(new RunOptions()));
     }
 
     [Fact]

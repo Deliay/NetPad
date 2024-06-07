@@ -1,16 +1,13 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using NetPad.Common;
-using Newtonsoft.Json;
 using NJsonSchema.Converters;
 
 namespace NetPad.Data;
 
-// Only used for NSwag
-[JsonConverter(typeof(JsonInheritanceConverter), "discriminator")]
-[System.Text.Json.Serialization.JsonConverter(typeof(JsonInheritanceConverter<DataConnection>))]
+[JsonConverter(typeof(JsonInheritanceConverter<DataConnection>))]
 [KnownType("GetKnownTypes")]
 public abstract class DataConnection
 {

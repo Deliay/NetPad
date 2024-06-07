@@ -1,5 +1,6 @@
 ﻿using NetPad.Common;
 using NetPad.DotNet;
+using NJsonSchema.Converters;
 using Xunit;
 
 namespace NetPad.Domain.Tests.Common;

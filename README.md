@@ -32,7 +32,7 @@ As soon as you open NetPad you'll be presented with the editor right away. Write
 
 The following must be installed to use NetPad:
 
-* [.NET SDK](https://dotnet.microsoft.com/en-us/download) (v6 or greater)
+* [.NET SDK](https://dotnet.microsoft.com/en-us/download) (v8 or greater)
 
 Additional requirements only if you plan to create and use database connections:
 

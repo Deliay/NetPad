@@ -18,7 +18,6 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
     private IServiceScope _serviceScope;
     private IInputReader<string> _inputReader;
     private IOutputWriter<object> _outputWriter;
-    private ScriptStatus _status;
     private Lazy<IScriptRuntime> _runtime;
     private bool _isDisposed;
 
@@ -31,7 +30,7 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
         _logger = _serviceScope.ServiceProvider.GetRequiredService<ILogger<ScriptEnvironment>>();
         _inputReader = ActionInputReader<string>.Null;
         _outputWriter = ActionOutputWriter<object>.Null;
-        _status = ScriptStatus.Ready;
+        Status = ScriptStatus.Ready;
 
         // Forwards the following 2 property change notifications as messages on the event bus. They will eventually be pushed to IPC clients.
         Script.OnPropertyChanged.Add(async args =>
@@ -55,7 +54,7 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
 
     public Script Script { get; }
 
-    public virtual ScriptStatus Status => _status;
+    public ScriptStatus Status { get; protected set; }
 
     public double RunDurationMilliseconds { get; private set; }
 
@@ -65,9 +64,9 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
 
         _logger.LogTrace($"{nameof(RunAsync)} start");
 
-        if (_status.NotIn(ScriptStatus.Ready, ScriptStatus.Error))
+        if (Status.NotIn(ScriptStatus.Ready, ScriptStatus.Error))
         {
-            throw new InvalidOperationException($"Script is not in the correct state to run. Status is currently: {_status}");
+            throw new InvalidOperationException($"Script is not in the correct state to run. Status is currently: {Status}");
         }
 
         await SetStatusAsync(ScriptStatus.Running);
@@ -90,7 +89,7 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
 
             await SetStatusAsync(runResult.IsScriptCompletedSuccessfully || runResult.IsRunCancelled ? ScriptStatus.Ready : ScriptStatus.Error);
 
-            _logger.LogDebug("Run finished with status: {Status}", _status);
+            _logger.LogDebug("Run finished with status: {Status}", Status);
         }
         catch (Exception ex)
         {
@@ -174,13 +173,13 @@ public class ScriptEnvironment : IDisposable, IAsyncDisposable
 
     private async Task SetStatusAsync(ScriptStatus status)
     {
-        if (status == _status)
+        if (status == Status)
         {
             return;
         }
 
-        var oldValue = _status;
-        _status = status;
+        var oldValue = Status;
+        Status = status;
         await _eventBus.PublishAsync(new EnvironmentPropertyChangedEvent(Script.Id, nameof(Status), oldValue, status));
     }
 

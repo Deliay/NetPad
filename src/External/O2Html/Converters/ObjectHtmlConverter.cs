@@ -81,15 +81,15 @@ public class ObjectHtmlConverter : HtmlConverter
         return HtmlSerializer.GetReadableProperties(type);
     }
 
-    private object? GetPropertyValue<T>(PropertyInfo property, ref T? obj)
+    private static object? GetPropertyValue<T>(PropertyInfo property, ref T? obj)
     {
         try
         {
             return property.GetValue(obj);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return string.Empty;
+            return default;
         }
     }
 }

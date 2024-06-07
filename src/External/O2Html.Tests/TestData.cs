@@ -52,6 +52,7 @@ public class TestData
             new object[] { new Exception("Some error") },
             new object[] { typeof(string) },
             new object[] { Version.Parse("1.2.3.4") },
+            new object[] { new Uri("https://www.github.com") },
         };
     }
 
@@ -63,7 +64,6 @@ public class TestData
             new object[] { new { Name = "John", Age = 32 } },
             new object[] { new Customer("John", 32) },
             new object[] { new Product("Computer", 995.5m) },
-            new object[] { new Uri("https://www.github.com") },
             new object[] { DBNull.Value },
             new object[] { CultureInfo.CurrentCulture },
             new object[] { new MemoryStream() },
