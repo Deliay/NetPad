@@ -251,6 +251,25 @@ for additional CLI options when packaging the app,
 and [electron-builder](https://www.electron.build/) for additional configuration
 options.
 
+## Packaging as Docker image
+
+### Build base NetPad image
+```shell
+cd ./src
+docker build -f ./Apps/NetPad.Apps.App/Dockerfile . -t netpad
+docker run -v ~/.local/share/NetPad:/root/.local/share/NetPad -p 57930:57930 netpad
+```
+
+### Add .NET SDK
+Prepare a new dockerfile and add SDK to container:
+
+```dockerfile
+FROM netpad
+RUN apk add dotnet6-sdk
+RUN wget .... | bash -c
+RUN ...
+```
+
 ## Resources :books::
 
 * Docs: [Go](https://github.com/tareqimbasher/NetPad/tree/main/docs)
