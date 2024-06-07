@@ -18,6 +18,7 @@ public class Plugin : IPlugin
         services.AddSingleton<OmniSharpServerCatalog>();
         services.AddTransient<IOmniSharpServerLocator, OmniSharpServerLocator>();
         services.AddTransient<IOmniSharpServerDownloader, OmniSharpServerDownloader>();
+        services.AddTransient<OmniSharpServerBuilder, OmniSharpServerBuilder>();
         services.AddOmniSharpServer();
 
         services.AddScoped<AppOmniSharpServerAccessor>();

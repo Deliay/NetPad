@@ -104,13 +104,14 @@ public class OmniSharpServerDownloader : IOmniSharpServerDownloader
         var executableFileName = GetExecutableFileName(platform);
 
         var executableFile = new FileInfo(Path.Combine(downloadDir.FullName, executableFileName));
+        var entryDllFile = new FileInfo(Path.Combine(downloadDir.FullName, GetEntryDllFileName()));
 
-        if (!executableFile.Exists)
+        if (!executableFile.Exists && !entryDllFile.Exists)
         {
             return null;
         }
 
-        return new OmniSharpServerLocation(executableFile.FullName);
+        return new OmniSharpServerLocation(executableFile.FullName, entryDllFile.FullName);
     }
 
     private DirectoryInfo GetDownloadRootDirectory() => new(Path.Combine(AppDataProvider.AppDataDirectoryPath.Path, "OmniSharp"));
@@ -140,5 +141,10 @@ public class OmniSharpServerDownloader : IOmniSharpServerDownloader
     private string GetExecutableFileName(OSPlatform platform)
     {
         return platform == OSPlatform.Windows ? "OmniSharp.exe" : "OmniSharp";
+    }
+
+    private string GetEntryDllFileName()
+    {
+        return "OmniSharp.dll";
     }
 }
